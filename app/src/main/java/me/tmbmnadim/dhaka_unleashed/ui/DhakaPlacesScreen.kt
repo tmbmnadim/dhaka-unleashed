@@ -23,38 +23,52 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import me.tmbmnadim.dhaka_unleashed.DhakaUnleashedApp
 import me.tmbmnadim.dhaka_unleashed.DhakaUnleashedAppBar
 import me.tmbmnadim.dhaka_unleashed.data.DhakaPlacesSource
 import me.tmbmnadim.dhaka_unleashed.models.DhakaPlace
-import me.tmbmnadim.dhaka_unleashed.ui.theme.Dhaka_unleashedTheme
 
 @Composable
-fun DhakaPlacesScreen(modifier: Modifier = Modifier) {
+fun DhakaPlacesScreen(
+    modifier: Modifier = Modifier,
+    onTap: (DhakaPlace) -> Unit = {}
+) {
     val places: List<DhakaPlace> = DhakaPlacesSource.places
-    Column(
+    PlacesList(
+        places = places,
         modifier = modifier
-    ) {
-        DhakaUnleashedAppBar()
-        PlacesList(
-            places = places, modifier = Modifier
-                .padding(horizontal = 16.dp)
-        )
-    }
+            .padding(horizontal = 16.dp),
+        onTap = onTap
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DhakaPlacesScreenPreview() {
+    DhakaPlacesScreen()
 }
 
 @Composable
-fun PlacesList(places: List<DhakaPlace>, modifier: Modifier = Modifier) {
+fun PlacesList(
+    places: List<DhakaPlace>,
+    modifier: Modifier = Modifier,
+    onTap: (DhakaPlace) -> Unit = {}
+) {
     LazyColumn(modifier = modifier) {
         items(places) { place ->
             PlacesListItem(
                 image = place.image,
                 title = place.title,
-                subtitle = place.subtitle
+                subtitle = place.subtitle,
+                onTap = {
+                    onTap(place)
+                }
             )
         }
     }
@@ -65,11 +79,13 @@ fun PlacesListItem(
     @DrawableRes image: Int,
     title: String,
     subtitle: String,
+    onTap: () -> Unit = {},
 ) {
     Card(
         modifier = Modifier
             .padding(vertical = 4.dp)
-            .background(color = Color.White)
+            .background(color = Color.White),
+        onClick = onTap
     ) {
         Row(
             modifier = Modifier
@@ -91,7 +107,7 @@ fun PlacesListItem(
                     title,
                     maxLines = 1,
                     overflow = TextOverflow.Clip,
-                    style = androidx.compose.ui.text.TextStyle(
+                    style = TextStyle(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -100,7 +116,7 @@ fun PlacesListItem(
                 Text(
                     subtitle,
                     maxLines = 1,
-                    style = androidx.compose.ui.text.TextStyle(
+                    style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Normal
                     )
