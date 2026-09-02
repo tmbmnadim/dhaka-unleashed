@@ -42,12 +42,15 @@ fun DhakaUnleashedApp(
         WindowWidthSizeClass.Compact -> {
             contentType = DhakaUnleashContentType.LIST_ONLY
         }
+
         WindowWidthSizeClass.Medium -> {
             contentType = DhakaUnleashContentType.LIST_ONLY
         }
+
         WindowWidthSizeClass.Expanded -> {
             contentType = DhakaUnleashContentType.LIST_AND_DETAIL
         }
+
         else -> {
             contentType = DhakaUnleashContentType.LIST_ONLY
         }
@@ -62,17 +65,20 @@ fun DhakaUnleashedApp(
                     contentType == DhakaUnleashContentType.LIST_ONLY
                             && !uiState.isShowingHomepage,
                 onBackPressed = {
-                    if(contentType == DhakaUnleashContentType.LIST_ONLY) {
+                    if (contentType == DhakaUnleashContentType.LIST_ONLY) {
                         viewModel.resetHomeScreenStates()
                     }
                 }
             )
         }
     ) { innerPadding ->
-        if(contentType == DhakaUnleashContentType.LIST_ONLY){
+        if (contentType == DhakaUnleashContentType.LIST_ONLY) {
             if (uiState.isShowingHomepage) {
                 DhakaPlacesScreen(
                     modifier = modifier.padding(innerPadding),
+                    places = uiState.places,
+                    showSelection = false,
+                    selectedPlace = uiState.selectedPlace ?: uiState.places[0],
                     onTap = {
                         viewModel.updateDetailsScreenStates(it)
                     }
@@ -92,7 +98,10 @@ fun DhakaUnleashedApp(
                 DhakaPlacesScreen(
                     modifier = Modifier
                         .padding(innerPadding)
-                        .fillMaxWidth(0.5f),
+                        .fillMaxWidth(0.4f),
+                    places = uiState.places,
+                    showSelection = true,
+                    selectedPlace = uiState.selectedPlace ?: uiState.places[0],
                     onTap = {
                         viewModel.updateDetailsScreenStates(it)
                     }
@@ -100,8 +109,9 @@ fun DhakaUnleashedApp(
                 PlacesDescriptionScreen(
                     modifier = Modifier
                         .padding(innerPadding)
-                        .fillMaxWidth(0.5f),
+                        .fillMaxWidth(0.6f),
                     place = uiState.selectedPlace,
+
                     onBackPressed = {
                         activity?.finish()
                     }

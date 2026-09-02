@@ -16,6 +16,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -37,13 +39,17 @@ import me.tmbmnadim.dhaka_unleashed.models.DhakaPlace
 @Composable
 fun DhakaPlacesScreen(
     modifier: Modifier = Modifier,
+    places: List<DhakaPlace>,
+    selectedPlace: DhakaPlace,
+    showSelection: Boolean = false,
     onTap: (DhakaPlace) -> Unit = {}
 ) {
-    val places: List<DhakaPlace> = DhakaPlacesSource.places
     PlacesList(
         places = places,
         modifier = modifier
             .padding(horizontal = 16.dp),
+        selectedPlace = selectedPlace,
+        showSelection = showSelection,
         onTap = onTap
     )
 }
@@ -51,13 +57,18 @@ fun DhakaPlacesScreen(
 @Preview(showBackground = true)
 @Composable
 fun DhakaPlacesScreenPreview() {
-    DhakaPlacesScreen()
+    DhakaPlacesScreen(
+        places = DhakaPlacesSource.places,
+        selectedPlace = DhakaPlacesSource.places[0],
+    )
 }
 
 @Composable
 fun PlacesList(
     places: List<DhakaPlace>,
+    selectedPlace: DhakaPlace,
     modifier: Modifier = Modifier,
+    showSelection: Boolean = false,
     onTap: (DhakaPlace) -> Unit = {}
 ) {
     LazyColumn(modifier = modifier) {
@@ -66,6 +77,8 @@ fun PlacesList(
                 image = place.image,
                 title = place.title,
                 subtitle = place.subtitle,
+                showSelection = showSelection,
+                isSelected = selectedPlace.id == place.id,
                 onTap = {
                     onTap(place)
                 }
@@ -79,12 +92,22 @@ fun PlacesListItem(
     @DrawableRes image: Int,
     title: String,
     subtitle: String,
+    showSelection: Boolean = false,
+    isSelected: Boolean = false,
     onTap: () -> Unit = {},
 ) {
     Card(
         modifier = Modifier
-            .padding(vertical = 4.dp)
-            .background(color = Color.White),
+            .padding(vertical = 4.dp),
+        colors = if(isSelected && showSelection){
+            CardDefaults.cardColors(
+                containerColor = Color(0x00000000)
+            )
+        } else {
+            CardDefaults.cardColors(
+                containerColor = Color(0xF0F0F0F0)
+            )
+        },
         onClick = onTap
     ) {
         Row(
